@@ -29,8 +29,8 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-              <%= link_to "Logout", destroy_user_session_path, method: :get, :class => 'navbar-link' %>
-              <i class="icon-key"></i>
+              <%#= link_to "Logout", destroy_user_session_path, method: :get, :class => 'navbar-link' %>
+              <a href="/users/sign_out"><i class="icon-key"></i>Logout</a>
             </li>
           </ul>
         </li>

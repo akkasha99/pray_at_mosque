@@ -9,9 +9,20 @@ class Users::SessionsController < Devise::SessionsController
   end
 
 # POST /resource/sign_in
-# def create
-#   super
-# end
+  def create
+    user = User.where(:email => params[:user][:email], :is_deleted => false).first
+    if user.present?
+      if user.is_active == false
+        flash[:error] = "User is not active to login."
+        redirect_to '/users/sign_out'
+      else
+        super
+      end
+    else
+      flash[:error] = "The username or password you entered is incorrect."
+      redirect_to '/users/sign_in'
+    end
+  end
 
 # DELETE /resource/sign_out
 # def destroy

@@ -8,7 +8,7 @@ class Admin::AdminsController < ApplicationController
 
   def dashboard
     @parents = User.joins(:role).where("roles.name=?", "parent")
-    @mosques = User.joins(:role).where("roles.name=?", "mosque")
+    @children = User.joins(:role).where("roles.name=?", "child")
     @mosques = User.joins(:role).where("roles.name=?", "mosque")
   end
 

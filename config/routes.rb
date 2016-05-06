@@ -48,14 +48,12 @@ Rails.application.routes.draw do
         get 'dashboard'
       end
     end
-  end
 
-  namespace :child do
-    resources :children do
+    resources :parents do
       collection do
-        get 'dashboard'
       end
     end
+
   end
 
   namespace :mosque do
