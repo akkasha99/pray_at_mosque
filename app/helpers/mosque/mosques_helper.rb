@@ -1,0 +1,2 @@
+module Mosque::MosquesHelper
+end

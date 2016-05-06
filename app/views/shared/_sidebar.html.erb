@@ -1,0 +1,7 @@
+<% if current_user.admin? %>
+    <%= render "/shared/admin_sidebar" %>
+<% elsif current_user.parent? %>
+    <%= render "/shared/parent_sidebar" %>
+<% elsif current_user.mosque? %>
+    <%= render "/shared/mosque_sidebar" %>
+<% end %>
