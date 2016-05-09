@@ -5,6 +5,9 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
   belongs_to :role
+  has_many :children, :class_name => "User", :foreign_key => "parent_id"
+  belongs_to :parent, :class_name => "User"
+
   has_one :family_code
   TEMP_EMAIL_PREFIX = 'change@me'
   TEMP_EMAIL_REGEX = /\Achange@me/

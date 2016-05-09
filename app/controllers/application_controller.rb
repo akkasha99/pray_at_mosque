@@ -9,9 +9,9 @@ class ApplicationController < ActionController::Base
     if resource.admin? == true
       '/admin/admins/dashboard'
     elsif resource.parent? == true
-      '/parent/parents/dashboard'
+      '/parent/parents'
     elsif resource.mosque? == true
-      '/mosque/mosques/dashboard'
+      '/mosque/mosques'
     end
   end
 

@@ -41,7 +41,7 @@ Rails.application.routes.draw do
   #       get 'sold'
   #     end
   #   end
-
+  #admin namespace
   namespace :admin do
     resources :admins do
       collection do
@@ -54,23 +54,36 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :children do
+      collection do
+      end
+    end
+
+    resources :mosques do
+      collection do
+      end
+    end
   end
 
+  #mosque namespace
   namespace :mosque do
     resources :mosques do
       collection do
-        get 'dashboard'
       end
     end
   end
 
+  #parent namespace
   namespace :parent do
     resources :parents do
       collection do
-        get 'dashboard'
+
       end
     end
   end
+
+  get 'parent/family', :to => "parent/parents#family"
+  get 'parent/profile', :to => "parent/parents#profile"
 
   # Example resource route with sub-resources:
   #   resources :products do

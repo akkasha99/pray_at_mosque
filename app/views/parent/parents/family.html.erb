@@ -1,0 +1,118 @@
+<div id="panel_body" class="page-content-wrapper">
+  <div class="page-content" style="min-height:1215px">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12 col-sm-12">
+            <div class="portlet grey-cascade box">
+              <div class="portlet-title">
+                <div class="caption">
+                  <i class="fa fa-cogs"></i>Family Members
+                </div>
+              </div>
+              <div class="portlet-body">
+                <div id="sample_1_wrapper" class="dataTables_wrapper no-footer">
+                  <table id="sample_1" class="table table-striped table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="sample_1_info">
+                    <thead>
+                    <tr role="row">
+                      <th> #</th>
+                      <th class="sorting_asc" tabindex="0" aria-controls="sample_1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column ascending">
+                        Name
+                      </th>
+                      <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 248px;" aria-label="Email">
+                        Email
+                      </th>
+                      <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Points">
+                        Phone
+                      </th>
+                      <th class="sorting" tabindex="0" aria-controls="sample_1" rowspan="1" colspan="1">
+                        Actions
+                      </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% if @children.length > 0 %>
+                        <% @children.each_with_index do |child, index| %>
+                            <tr>
+                              <td><%= index + 1 %></td>
+                              <td>
+                                <a href="javascript:;"><%= child.first_name + " " + child.last_name %></a>
+                              </td>
+                              <td>
+                                <span class="label label-sm label-success"> <%= child.email %> </span></td>
+                              <td> <%= child.phone %></td>
+                              <td>
+                                <%#= link_to "Edit", 'javascript:;', :onclick => "edit_user('#{child.id}');" %>
+                                <!--|-->
+                                <%= link_to "Delete", 'javascript:;', :onclick => "del_user('#{child.id}');" %>
+                              </td>
+                            </tr>
+                        <% end %>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-sm-12">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    var table = $('#sample_1');
+    table.dataTable({
+        "columns": [
+            {
+                "orderable": true
+            },
+            {
+                "orderable": true
+            },
+            {
+                "orderable": false
+            },
+            {
+                "orderable": true
+            },
+            {
+                "orderable": false
+            }
+        ],
+        "lengthMenu": [
+            [5, 10, 15, 20, -1],
+            [5, 10, 15, 20, "All"] // change per page values here
+        ],
+        // set the initial value
+        "pageLength": 10,
+        "pagingType": "bootstrap_full_number",
+        "language": {
+            "lengthMenu": "_MENU_ records",
+            "paginate": {
+                "previous": "Prev",
+                "next": "Next",
+                "last": "Last",
+                "first": "First"
+            }
+        },
+        "columnDefs": [
+            { // set default column settings
+                'orderable': true,
+                'targets': [1]
+            },
+            {
+                "searchable": true,
+                "targets": [1]
+            }
+        ],
+        "order": [
+            [5, "asc"]
+        ] // set first column as a default sort by asc
+    });
+</script>

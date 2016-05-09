@@ -14,11 +14,11 @@
             <i class="fa fa-angle-right"></i>
           </li>
           <li>
-            <a href="#">Parents</a>
+            <a href="#">Children</a>
             <i class="fa fa-angle-right"></i>
           </li>
           <li>
-            <a href="/admin/parents">All Parents</a>
+            <a href="/admin/children">All Parents</a>
           </li>
           <li class="pull-right">
             <div data-original-title="Change dashboard date range" data-placement="top" class="dashboard-date-range tooltips" id="dashboard-report-range">
@@ -39,7 +39,7 @@
         <div class="portlet box grey-cascade">
           <div class="portlet-title">
             <div class="caption">
-              <i class="fa fa-globe"></i> Active Parents
+              <i class="fa fa-globe"></i> Active Children
             </div>
             <div class="tools">
               <a class="collapse" href="javascript:;">
@@ -56,7 +56,7 @@
             <div class="table-toolbar">
               <div class="btn-group">
                 <%#= link_to "Create User", :class => "btn green" %>
-                <a href="#" onclick="create_user('users/new')" class="btn green">Create User</a>
+                <a href="#" class="btn green">Create User</a>
               </div>
 
             </div>
@@ -79,6 +79,9 @@
                   <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 91px;" aria-label="Points">
                     About Me
                   </th>
+                  <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 91px;" aria-label="Points">
+                    Parent
+                  </th>
                   <th class="sorting" tabindex="0" aria-controls="sample_1" rowspan="1" colspan="1" style="width: 120px;" aria-label="Joined: activate to sort column ascending">
                     Created
                   </th>
@@ -88,32 +91,37 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% @active_parents.each_with_index do |user, index| %>
-                    <tr class="">
-                      <td>
-                        <%= index+1 %>
-                      </td>
-                      <td>
-                        <%= user.email %>
-                      </td>
-                      <td>
-                        <%= [user.first_name, user.last_name].join(" ") %>
-                      </td>
-                      <td>
-                        <%= user.phone %>
-                      </td>
-                      <td>
-                        <%= user.about_me %>
-                      </td>
-                      <td>
-                        <%= time_ago_in_words(user.created_at) %>
-                      </td>
-                      <td>
-                        <%= link_to "Edit", 'javascript:;', :onclick => "edit_user('#{user.id}');" %> |
-                        <%#= link_to "Delete", 'javascript:;', :onclick => "del_user('#{user.id}');" %>
-                        <%= link_to "Deactivate", 'javascript:;', :onclick => "activate_deactivate_user('#{user.id}');" %>
-                      </td>
-                    </tr>
+                <% if @inactive_children.length > 0 %>
+                    <% @active_children.each_with_index do |user, index| %>
+                        <tr class="">
+                          <td>
+                            <%= index+1 %>
+                          </td>
+                          <td>
+                            <%= user.email %>
+                          </td>
+                          <td>
+                            <%= [user.first_name, user.last_name].join(" ") %>
+                          </td>
+                          <td>
+                            <%= user.phone %>
+                          </td>
+                          <td>
+                            <%= user.about_me %>
+                          </td>
+                          <td>
+                            <%= [user.parent.first_name, user.last_name].join(" ") %>
+                          </td>
+                          <td>
+                            <%= time_ago_in_words(user.created_at) %>
+                          </td>
+                          <td>
+                            <%= link_to "Edit", 'javascript:;', :onclick => "edit_user('#{user.id}');" %> |
+                            <%#= link_to "Delete", 'javascript:;', :onclick => "del_user('#{user.id}');" %>
+                            <%= link_to "Deactivate", 'javascript:;', :onclick => "activate_deactivate_user('#{user.id}');" %>
+                          </td>
+                        </tr>
+                    <% end %>
                 <% end %>
                 </tbody>
               </table>
@@ -132,7 +140,7 @@
         <div class="portlet box grey-cascade">
           <div class="portlet-title">
             <div class="caption">
-              <i class="fa fa-globe"></i> InActive Parents
+              <i class="fa fa-globe"></i> InActive Children
             </div>
             <div class="tools">
               <a class="collapse" href="javascript:;">
@@ -180,32 +188,34 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% @inactive_parents.each_with_index do |user, index| %>
-                    <tr class="">
-                      <td>
-                        <%= index+1 %>
-                      </td>
-                      <td>
-                        <%= user.email %>
-                      </td>
-                      <td>
-                        <%= [user.first_name, user.last_name].join(" ") %>
-                      </td>
-                      <td>
-                        <%= user.phone %>
-                      </td>
-                      <td>
-                        <%= user.about_me %>
-                      </td>
-                      <td>
-                        <%= time_ago_in_words(user.created_at) %>
-                      </td>
-                      <td>
-                        <%= link_to "Edit", 'javascript:;', :onclick => "edit_user('#{user.id}');" %> |
-                        <%#= link_to "Delete", 'javascript:;', :onclick => "del_user('#{user.id}');" %>
-                        <%= link_to "Activate", 'javascript:;', :onclick => "activate_deactivate_user('#{user.id}');" %>
-                      </td>
-                    </tr>
+                <% if @inactive_children.length > 0 %>
+                    <% @inactive_children.each_with_index do |user, index| %>
+                        <tr class="">
+                          <td>
+                            <%= index+1 %>
+                          </td>
+                          <td>
+                            <%= user.email %>
+                          </td>
+                          <td>
+                            <%= [user.first_name, user.last_name].join(" ") %>
+                          </td>
+                          <td>
+                            <%= user.phone %>
+                          </td>
+                          <td>
+                            <%= user.about_me %>
+                          </td>
+                          <td>
+                            <%= time_ago_in_words(user.created_at) %>
+                          </td>
+                          <td>
+                            <%= link_to "Edit", 'javascript:;', :onclick => "edit_user('#{user.id}');" %> |
+                            <%#= link_to "Delete", 'javascript:;', :onclick => "del_user('#{user.id}');" %>
+                            <%= link_to "Activate", 'javascript:;', :onclick => "activate_deactivate_user('#{user.id}');" %>
+                          </td>
+                        </tr>
+                    <% end %>
                 <% end %>
                 </tbody>
               </table>
@@ -218,113 +228,3 @@
     </div>
   </div>
 </div>
-
-<script>
-    var table = $('#sample_1');
-    table.dataTable({
-        "columns": [
-            {
-                "orderable": true
-            },
-            {
-                "orderable": true
-            },
-            {
-                "orderable": false
-            },
-            {
-                "orderable": true
-            },
-            {
-                "orderable": true
-            },
-            {
-                "orderable": false
-            }
-        ],
-        "lengthMenu": [
-            [5, 10, 15, 20, -1],
-            [5, 10, 15, 20, "All"] // change per page values here
-        ],
-        // set the initial value
-        "pageLength": 10,
-        "pagingType": "bootstrap_full_number",
-        "language": {
-            "lengthMenu": "_MENU_ records",
-            "paginate": {
-                "previous": "Prev",
-                "next": "Next",
-                "last": "Last",
-                "first": "First"
-            }
-        },
-        "columnDefs": [
-            {  // set default column settings
-                'orderable': true,
-                'targets': [1]
-            },
-            {
-                "searchable": true,
-                "targets": [1]
-            }
-        ],
-        "order": [
-            [5, "asc"]
-        ] // set first column as a default sort by asc
-    });
-
-    var table = $('#sample_2');
-    table.dataTable({
-        "columns": [
-            {
-                "orderable": true
-            },
-            {
-                "orderable": true
-            },
-            {
-                "orderable": false
-            },
-            {
-                "orderable": true
-            },
-            {
-                "orderable": true
-            },
-            {
-                "orderable": false
-            }
-        ],
-        "lengthMenu": [
-            [5, 10, 15, 20, -1],
-            [5, 10, 15, 20, "All"] // change per page values here
-        ],
-        // set the initial value
-        "pageLength": 10,
-        "pagingType": "bootstrap_full_number",
-        "language": {
-            "lengthMenu": "_MENU_ records",
-            "paginate": {
-                "previous": "Prev",
-                "next": "Next",
-                "last": "Last",
-                "first": "First"
-            }
-        },
-        "columnDefs": [
-            {  // set default column settings
-                'orderable': true,
-                'targets': [1]
-            },
-            {
-                "searchable": true,
-                "targets": [1]
-            }
-        ],
-        "order": [
-            [5, "asc"]
-        ] // set first column as a default sort by asc
-    });
-
-
-</script>
