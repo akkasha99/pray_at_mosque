@@ -42,8 +42,8 @@
 //= require additional-methods.min
 //= require apprise-v2
 //= require apprise-1.5.full
-//= require markerwithlabel
-
+//= require_self
+//= require_tree .
 
 
 function hudMsg(type, message, timeOut) {

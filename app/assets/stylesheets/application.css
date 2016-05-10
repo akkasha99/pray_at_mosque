@@ -29,3 +29,67 @@
  *= require apprise-v2
  *= require_self
  */
+.hudmsg {
+    width: 160px;
+    height: 160px;
+    padding: 15px;
+    color: #eee;
+    background: url(/assets/tt.png) 0 0 repeat;
+    /*background: rgba(0, 0, 0, 0.7);*/
+    font-weight: bold;
+    text-align: center;
+    font-size: 14px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -80px;
+    margin-top: -72px;
+    min-height: 144px;
+    z-index: 1000;
+    text-shadow: 0 1px 1px #000;
+    font-family: ralewaymedium;
+    -webkit-border-radius: 150px;
+    -moz-border-radius: 150px;
+    border-radius: 150px;
+}
+
+.hudmsg p {
+    height: auto;
+    max-height: 66px;
+    max-width: 120px;
+    overflow: hidden;
+    width: auto;
+}
+
+.hudmsg img {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 15px;
+}
+
+.background_shadow {
+    background: none repeat scroll 0 0 #000000;
+    display: block;
+    height: 100%;
+    left: 0;
+    opacity: 0.6;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999999999999
+}
+
+.loader_img {
+    background: url("/assets/dd.gif") no-repeat scroll right center transparent;
+    display: block;
+    height: 100px;
+    left: 46%;
+    opacity: 0.6;
+    position: absolute;
+    top: 25%;
+    width: 100px;
+    z-index: 9999999999999999;
+    background-size: 100px 100px !important;
+}
+
+

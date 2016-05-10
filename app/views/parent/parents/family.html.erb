@@ -57,8 +57,54 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12 col-sm-12">
+          <div class="portlet">
+            <div class="portlet-title">
+              <div class="caption">
+                <i class="icon-edit font-dark"></i>
+                <span class="caption-subject font-dark bold uppercase">Add a Family Member</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+          </div>
+          <div class="col-md-6">
 
+            <div class="portlet box grey-cascade">
+              <div class="portlet-title">
+                <div class="caption">
+                  <i class="fa fa-comments"></i>Add Member
+                </div>
+                <div class="tools">
+                </div>
+              </div>
+              <div class="portlet-body">
+                <% @user = User.new %>
+                <%= form_for @user, :url => '/parent/parents', :html => {:id => 'family_form', :multipart => true, :onsubmit => 'return false;'} do |f| %>
+                    <div class="clearfix margin-top-10">
+                      <label>First Name:</label>
+                      <%= f.text_field :first_name, :placeholder => "First Name", :class => "form-control placeholder-no-fix" %>
+                    </div>
+                    <div class="clearfix margin-top-10">
+                      <label>Last Name:</label>
+                      <%= f.text_field :last_name, :placeholder => "Last Name", :class => "form-control placeholder-no-fix" %>
+                    </div>
+                    <div class="clearfix margin-top-10">
+                      <label>Email:</label>
+                      <%= f.text_field :email, :placeholder => "Email", :class => "form-control placeholder-no-fix" %>
+                    </div>
+                    <div class="clearfix margin-top-10">
+                      <label>Phone Number:</label>
+                      <%= f.text_field :phone, :placeholder => "Phone Number", :class => "form-control placeholder-no-fix" %>
+                    </div>
+                    <div class="clearfix">
+                      <a href="javascript:;" onclick="create_family_member()" class="btn green pull-left margin-top-10">
+                        Create</a>
+                    </div>
+                <% end %>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -115,4 +161,74 @@
             [5, "asc"]
         ] // set first column as a default sort by asc
     });
+    $(document).ready(function () {
+        $("#family_form").validate({
+                    rules: {
+                        "user[first_name]": {
+                            maxlength: 255,
+                            minlength: 3,
+                            required: true
+                        },
+                        "user[last_name]": {
+                            maxlength: 255,
+                            minlength: 3,
+                            required: true
+                        },
+                        "user[email]": {
+                            maxlength: 255,
+                            required: true,
+                            email: true,
+                            remote: {
+                                url: "/parent/parents/check_email?email=" + "user[email]",
+                                type: "get"
+                                //                            dataType:'html'
+                            }
+                        },
+                        "user[phone]": {
+                            maxlength: 255,
+                            minlength: 3,
+                            number: true,
+                            required: true
+                        }
+                    },
+                    messages: {
+                        "user[email]": {
+                            remote: "Email already exists."
+                        }
+
+                    }
+
+                }
+        );
+    })
+
+
+    function create_family_member() {
+        alert($('#family_form').valid())
+        if ($('#family_form').valid() == true) {
+            $(".background_shadow").show();
+            $("#family_form").ajaxSubmit({
+                success: function (data) {
+                    if (data == 'success') {
+                        $(".background_shadow").hide()
+//                    $('#panel_body').html(data);
+                        hudMsg('success', 'Added Successfully.')
+                    }
+                    else if (data == 'error') {
+                        $(".background_shadow").hide()
+                        hudMsg('error', 'Something went wrong. Try again later.')
+
+                    }
+                    else if (data == 'error') {
+                        $(".background_shadow").hide()
+                        hudMsg('error', 'This email has already been taken.')
+
+                    }
+                },
+                error: function (data) {
+
+                }
+            });
+        }
+    }
 </script>

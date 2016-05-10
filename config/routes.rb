@@ -77,7 +77,8 @@ Rails.application.routes.draw do
   namespace :parent do
     resources :parents do
       collection do
-
+        get 'check_email'
+        patch 'update_profile'
       end
     end
   end

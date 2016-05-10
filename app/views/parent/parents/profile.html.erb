@@ -2,10 +2,173 @@
   <div class="page-content" style="min-height:1215px">
     <div class="row">
       <div class="col-md-12">
-        <div class="row">
-          Profile
+        <div class="page-content-col">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="profile-content">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="portlet light">
+                      <div class="portlet-title tabbable-line">
+                        <div class="caption caption-md margin-right-10">
+                          <i class="icon-globe theme-font hide"></i>
+                          <span class="caption-subject font-blue-madison bold uppercase">Profile</span>
+                        </div>
+                        <ul class="nav nav-tabs">
+                          <li class="active">
+                            <a data-toggle="tab" href="#tab_1_1" aria-expanded="false">Personal Info</a>
+                          </li>
+                          <li class="">
+                            <a data-toggle="tab" href="#tab_1_2" aria-expanded="false">Change Avatar</a>
+                          </li>
+                          <li class="">
+                            <a data-toggle="tab" href="#tab_1_3" aria-expanded="false">Change Password</a>
+                          </li>
+                          <li class="">
+                            <a data-toggle="tab" href="#tab_1_4" aria-expanded="false">Payment Information</a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="portlet-body">
+                        <div class="tab-content">
+                          <div id="tab_1_1" class="tab-pane active">
+                            <%= form_for @user, :url => '/parent/parents/update_profile', :html => {:id => 'profile_form', :multipart => true, :onsubmit => 'return false;', :type => 'patch'} do |f| %>
+                                <div class="form-group">
+                                  <label class="control-label">First Name</label>
+                                  <%= f.text_field :first_name, :class => "form-control", :placeholder => "John" %>
+                                </div>
+                                <div class="form-group">
+                                  <label class="control-label">Last Name</label>
+                                  <%= f.text_field :last_name, :class => "form-control", :placeholder => "Doe" %>
+                                </div>
+                                <div class="form-group">
+                                  <label class="control-label">Email</label>
+                                  <%= f.email_field :email, :class => "form-control", :placeholder => "john.deo@gmail.com", :readonly => true %>
+                                </div>
+                                <div class="form-group">
+                                  <label class="control-label">Mobile Number</label>
+                                  <%= f.text_field :phone, :class => "form-control", :placeholder => "+923126547890" %>
+                                </div>
+                                <div class="form-group">
+                                  <label class="control-label">About</label>
+                                  <%= f.text_area :about_me, :class => "form-control", :placeholder => "I am professional." %>
+                                </div>
+                                <div class="margiv-top-10">
+                                  <a class="btn green" href="javascript:;" onclick="update_my_profile()"> Save
+                                    Changes </a>
+                                  <!--<a class="btn default" href="javascript:;"> Cancel </a>-->
+                                </div>
+                            <% end %>
+                          </div>
+                          <div id="tab_1_2" class="tab-pane">
+                            <%= form_for @user, :url => '/parent/parents/update_profile', :html => {:id => 'profile_image', :multipart => true, :onsubmit => 'return false;', :type => 'patch'} do |f| %>
+                                <div class="form-group">
+                                  <div data-provides="fileinput" class="fileinput fileinput-new">
+                                    <div style="width: 300px; height: 200px;" class="fileinput-new thumbnail">
+                                      <%= image_tag @user.avatar %>
+                                    </div>
+                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                    <div>
+                                    <span class="btn default btn-file">
+                                        <span class="fileinput-new"> Select image </span>
+                                        <span class="fileinput-exists"> Change </span>
+                                      <%= f.file_field :avatar %>
+                                    </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="margin-top-10">
+                                  <a class="btn green" href="javascript:;" onclick="update_photo()">Update</a>
+                                  <a class="btn default" href="javascript:;"> Cancel </a>
+                                </div>
+                            <% end %>
+                          </div>
+                          <div id="tab_1_3" class="tab-pane">
+                            <form action="#">
+                              <div class="form-group">
+                                <label class="control-label">Current Password</label>
+                                <input type="password" class="form-control"></div>
+                              <div class="form-group">
+                                <label class="control-label">New Password</label>
+                                <input type="password" class="form-control"></div>
+                              <div class="form-group">
+                                <label class="control-label">Re-type New Password</label>
+                                <input type="password" class="form-control"></div>
+                              <div class="margin-top-10">
+                                <a class="btn green" href="javascript:;"> Change Password </a>
+                                <a class="btn default" href="javascript:;"> Cancel </a>
+                              </div>
+                            </form>
+                          </div>
+                          <div id="tab_1_4" class="tab-pane">
+                            <form action="#">
+                              <div class="form-group">
+                                <label class="control-label">Current Password</label>
+                                <input type="password" class="form-control"></div>
+                              <div class="form-group">
+                                <label class="control-label">New Password</label>
+                                <input type="password" class="form-control"></div>
+                              <div class="form-group">
+                                <label class="control-label">Re-type New Password</label>
+                                <input type="password" class="form-control"></div>
+                              <div class="margin-top-10">
+                                <a class="btn green" href="javascript:;"> Change Password </a>
+                                <a class="btn default" href="javascript:;"> Cancel </a>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+    function update_my_profile() {
+        if ($("#profile_form").valid() == true) {
+            $(".background_shadow").show();
+            $("#profile_form").ajaxSubmit({
+                success: function (data) {
+                    if (data == "success") {
+                        $(".background_shadow").hide();
+                        hudMsg('success', 'Profile Updated successfully.')
+                    }
+                    else if (data == "error") {
+                        $(".background_shadow").hide();
+                        hudMsg('error', 'Something went wrong. Try again later.')
+                    }
+                },
+                error: function (data) {
+                }
+            })
+        }
+    }
+
+    function update_photo() {
+        if ($("#profile_image").valid() == true) {
+            $(".background_shadow").show();
+            $("#profile_image").ajaxSubmit({
+                success: function (data) {
+                    if (data == "success") {
+                        $(".background_shadow").hide();
+                        hudMsg('success', 'Profile Updated successfully.')
+                    }
+                    else if (data == "error") {
+                        $(".background_shadow").hide();
+                        hudMsg('error', 'Something went wrong. Try again later.')
+                    }
+                },
+                error: function (data) {
+                }
+            })
+        }
+    }
+</script>
