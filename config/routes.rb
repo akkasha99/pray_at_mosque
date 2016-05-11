@@ -79,6 +79,7 @@ Rails.application.routes.draw do
       collection do
         get 'check_email'
         patch 'update_profile'
+        post 'update_password'
       end
     end
   end

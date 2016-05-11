@@ -32,7 +32,7 @@
                       <div class="portlet-body">
                         <div class="tab-content">
                           <div id="tab_1_1" class="tab-pane active">
-                            <%= form_for @user, :url => '/parent/parents/update_profile', :html => {:id => 'profile_form', :multipart => true, :onsubmit => 'return false;', :type => 'patch'} do |f| %>
+                            <%= form_for @user, :url => '/parent/parents/update_profile?profile=true', :html => {:id => 'profile_form', :multipart => true, :onsubmit => 'return false;', :type => 'patch'} do |f| %>
                                 <div class="form-group">
                                   <label class="control-label">First Name</label>
                                   <%= f.text_field :first_name, :class => "form-control", :placeholder => "John" %>
@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="form-group">
                                   <label class="control-label">Mobile Number</label>
-                                  <%= f.text_field :phone, :class => "form-control", :placeholder => "+923126547890" %>
+                                  <%= f.text_field :phone, :class => "form-control", :placeholder => "03124567890" %>
                                 </div>
                                 <div class="form-group">
                                   <label class="control-label">About</label>
@@ -61,44 +61,28 @@
                             <% end %>
                           </div>
                           <div id="tab_1_2" class="tab-pane">
-                            <%= form_for @user, :url => '/parent/parents/update_profile', :html => {:id => 'profile_image', :multipart => true, :onsubmit => 'return false;', :type => 'patch'} do |f| %>
-                                <div class="form-group">
-                                  <div data-provides="fileinput" class="fileinput fileinput-new">
-                                    <div style="width: 300px; height: 200px;" class="fileinput-new thumbnail">
-                                      <%= image_tag @user.avatar %>
-                                    </div>
-                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                    <div>
-                                    <span class="btn default btn-file">
-                                        <span class="fileinput-new"> Select image </span>
-                                        <span class="fileinput-exists"> Change </span>
-                                      <%= f.file_field :avatar %>
-                                    </span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="margin-top-10">
-                                  <a class="btn green" href="javascript:;" onclick="update_photo()">Update</a>
-                                  <a class="btn default" href="javascript:;"> Cancel </a>
-                                </div>
-                            <% end %>
+                            <%= render :partial => 'profile_image' %>
                           </div>
                           <div id="tab_1_3" class="tab-pane">
-                            <form action="#">
-                              <div class="form-group">
-                                <label class="control-label">Current Password</label>
-                                <input type="password" class="form-control"></div>
-                              <div class="form-group">
-                                <label class="control-label">New Password</label>
-                                <input type="password" class="form-control"></div>
-                              <div class="form-group">
-                                <label class="control-label">Re-type New Password</label>
-                                <input type="password" class="form-control"></div>
-                              <div class="margin-top-10">
-                                <a class="btn green" href="javascript:;"> Change Password </a>
-                                <a class="btn default" href="javascript:;"> Cancel </a>
-                              </div>
-                            </form>
+                            <%= form_for @user, :url => "/parent/parents/update_password", :html => {:id => 'password_form', :multipart => true, :onsubmit => 'return false;', :method => "post"} do |f| %>
+                                <div class="form-group">
+                                  <label class="control-label">Current Password</label>
+                                  <%= password_field_tag 'Old_Password', '', :placeholder => 'Old Password', :class => "form-control" %>
+                                </div>
+                                <div class="form-group">
+                                  <label class="control-label">New Password</label>
+                                  <%= f.password_field :password, :placeholder => "New Password", :id => "new_password", :class => "form-control" %>
+                                </div>
+                                <div class="form-group">
+                                  <label class="control-label">Re-type New Password</label>
+                                  <%= f.password_field :password_confirmation, :placeholder => "New Password, again", :id => "password_confirmation", :class => 'form-control' %>
+                                </div>
+                                <div class="margin-top-10">
+                                  <a class="btn green" href="javascript:;" onclick="update_password()"> Change
+                                    Password </a>
+                                  <!--<a class="btn default" href="javascript:;"> Cancel </a>-->
+                                </div>
+                            <% end %>
                           </div>
                           <div id="tab_1_4" class="tab-pane">
                             <form action="#">
@@ -113,7 +97,7 @@
                                 <input type="password" class="form-control"></div>
                               <div class="margin-top-10">
                                 <a class="btn green" href="javascript:;"> Change Password </a>
-                                <a class="btn default" href="javascript:;"> Cancel </a>
+                                <!--<a class="btn default" href="javascript:;"> Cancel </a>-->
                               </div>
                             </form>
                           </div>
@@ -152,23 +136,80 @@
         }
     }
 
-    function update_photo() {
-        if ($("#profile_image").valid() == true) {
+    function update_password() {
+        if ($("#password_form").valid() == true) {
             $(".background_shadow").show();
-            $("#profile_image").ajaxSubmit({
+            $("#password_form").ajaxSubmit({
                 success: function (data) {
                     if (data == "success") {
                         $(".background_shadow").hide();
-                        hudMsg('success', 'Profile Updated successfully.')
+                        hudMsg('success', 'Password updated successfully.')
+                        $('#password_form').trigger("reset");
+                    }
+                    else if (data == "not") {
+                        $(".background_shadow").hide();
+                        hudMsg('error', 'Old password is wrong.')
                     }
                     else if (data == "error") {
                         $(".background_shadow").hide();
                         hudMsg('error', 'Something went wrong. Try again later.')
                     }
-                },
-                error: function (data) {
                 }
             })
         }
     }
+
+    $("#password_form").validate({
+                rules: {
+                    "user[password]": {
+                        required: true,
+                        maxlength: 255,
+                        minlength: 8
+                    },
+                    "user[password_confirmation]": {
+                        required: true,
+                        maxlength: 255,
+                        minlength: 8,
+                        equalTo: '#new_password'
+                    },
+                    "Old_Password": {
+                        required: true,
+                        maxlength: 255,
+                        minlength: 8
+                    }
+                }
+
+            }
+    );
+
+    $("#profile_form").validate({
+                rules: {
+                    "user[first_name]": {
+                        required: true,
+                        maxlength: 255
+                    },
+                    "user[last_name]": {
+                        required: true,
+                        maxlength: 255
+
+                    },
+                    "user[email]": {
+                        required: true,
+                        maxlength: 255,
+                        email: true
+                    },
+                    "user[phone]": {
+                        required: true,
+                        maxlength: 255,
+                        minlength: 6,
+                        number: true
+                    },
+                    "user[about_me]": {
+                        maxlength: 255
+                    }
+                }
+
+            }
+    );
+
 </script>

@@ -1,0 +1,36 @@
+<%= form_for @user, :url => '/parent/parents/update_profile?profile=false', :html => {:id => 'profile_image', :multipart => true, :onsubmit => 'return false;', :type => 'patch'} do |f| %>
+    <div class="form-group">
+      <div data-provides="fileinput" class="fileinput fileinput-new">
+        <div style="width: 300px; height: 200px;" class="fileinput-new thumbnail">
+          <%= image_tag @user.avatar %>
+        </div>
+        <div class="fileinput-preview fileinput-exists thumbnail"></div>
+        <div>
+          <span class="btn default btn-file">
+            <span class="fileinput-new"> Select image </span>
+            <span class="fileinput-exists"> Change </span>
+            <%= f.file_field :avatar %>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="margin-top-10">
+      <a class="btn green" href="javascript:;" onclick="update_photo()">Update</a>
+      <!--<a class="btn default" href="javascript:;"> Cancel </a>-->
+    </div>
+<% end %>
+
+<script>
+    function update_photo() {
+        $(".background_shadow").show();
+        $("#profile_image").ajaxSubmit({
+            success: function (data) {
+                $("#tab_1_2").html(data);
+                $(".background_shadow").hide();
+                hudMsg('success', 'Profile image updated successfully.')
+            },
+            error: function (data) {
+            }
+        })
+    }
+</script>

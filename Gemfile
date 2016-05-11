@@ -29,6 +29,8 @@ gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'paperclip'
+gem "braintree-rails", :github => "lyang/braintree-rails", :branch => 'master'
+gem 'braintree'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

@@ -81,7 +81,7 @@
               </div>
               <div class="portlet-body">
                 <% @user = User.new %>
-                <%= form_for @user, :url => '/parent/parents', :html => {:id => 'family_form', :multipart => true, :onsubmit => 'return false;'} do |f| %>
+                <%= form_for @user, :url => '/parent/parents', :html => {:id => 'family1_form', :multipart => true, :onsubmit => 'return false;'} do |f| %>
                     <div class="clearfix margin-top-10">
                       <label>First Name:</label>
                       <%= f.text_field :first_name, :placeholder => "First Name", :class => "form-control placeholder-no-fix" %>
@@ -112,117 +112,72 @@
   </div>
 </div>
 <script>
-    var table = $('#sample_1');
-    table.dataTable({
-        "columns": [
-            {
-                "orderable": true
-            },
-            {
-                "orderable": true
-            },
-            {
-                "orderable": false
-            },
-            {
-                "orderable": true
-            },
-            {
-                "orderable": false
-            }
-        ],
-        "lengthMenu": [
-            [5, 10, 15, 20, -1],
-            [5, 10, 15, 20, "All"] // change per page values here
-        ],
-        // set the initial value
-        "pageLength": 10,
-        "pagingType": "bootstrap_full_number",
-        "language": {
-            "lengthMenu": "_MENU_ records",
-            "paginate": {
-                "previous": "Prev",
-                "next": "Next",
-                "last": "Last",
-                "first": "First"
-            }
-        },
-        "columnDefs": [
-            { // set default column settings
-                'orderable': true,
-                'targets': [1]
-            },
-            {
-                "searchable": true,
-                "targets": [1]
-            }
-        ],
-        "order": [
-            [5, "asc"]
-        ] // set first column as a default sort by asc
-    });
-    $(document).ready(function () {
-        $("#family_form").validate({
-                    rules: {
-                        "user[first_name]": {
-                            maxlength: 255,
-                            minlength: 3,
-                            required: true
-                        },
-                        "user[last_name]": {
-                            maxlength: 255,
-                            minlength: 3,
-                            required: true
-                        },
-                        "user[email]": {
-                            maxlength: 255,
-                            required: true,
-                            email: true,
-                            remote: {
-                                url: "/parent/parents/check_email?email=" + "user[email]",
-                                type: "get"
-                                //                            dataType:'html'
-                            }
-                        },
-                        "user[phone]": {
-                            maxlength: 255,
-                            minlength: 3,
-                            number: true,
-                            required: true
-                        }
-                    },
-                    messages: {
-                        "user[email]": {
-                            remote: "Email already exists."
-                        }
-
-                    }
-
-                }
-        );
-    })
-
+    //    var table = $('#sample_1');
+    //    table.dataTable({
+    //        "columns": [
+    //            {
+    //                "orderable": true
+    //            },
+    //            {
+    //                "orderable": true
+    //            },
+    //            {
+    //                "orderable": false
+    //            },
+    //            {
+    //                "orderable": true
+    //            },
+    //            {
+    //                "orderable": false
+    //            }
+    //        ],
+    //        "lengthMenu": [
+    //            [5, 10, 15, 20, -1],
+    //            [5, 10, 15, 20, "All"] // change per page values here
+    //        ],
+    //        // set the initial value
+    //        "pageLength": 10,
+    //        "pagingType": "bootstrap_full_number",
+    //        "language": {
+    //            "lengthMenu": "_MENU_ records",
+    //            "paginate": {
+    //                "previous": "Prev",
+    //                "next": "Next",
+    //                "last": "Last",
+    //                "first": "First"
+    //            }
+    //        },
+    //        "columnDefs": [
+    //            { // set default column settings
+    //                'orderable': true,
+    //                'targets': [1]
+    //            },
+    //            {
+    //                "searchable": true,
+    //                "targets": [1]
+    //            }
+    //        ],
+    //        "order": [
+    //            [5, "asc"]
+    //        ] // set first column as a default sort by asc
+    //    });
 
     function create_family_member() {
-        alert($('#family_form').valid())
-        if ($('#family_form').valid() == true) {
+        if ($("#family1_form").valid() == true) {
             $(".background_shadow").show();
-            $("#family_form").ajaxSubmit({
+            $("#family1_form").ajaxSubmit({
                 success: function (data) {
                     if (data == 'success') {
                         $(".background_shadow").hide()
-//                    $('#panel_body').html(data);
                         hudMsg('success', 'Added Successfully.')
                     }
                     else if (data == 'error') {
                         $(".background_shadow").hide()
                         hudMsg('error', 'Something went wrong. Try again later.')
-
                     }
-                    else if (data == 'error') {
+                    else if (data == 'error2') {
                         $(".background_shadow").hide()
                         hudMsg('error', 'This email has already been taken.')
-
                     }
                 },
                 error: function (data) {
@@ -231,4 +186,42 @@
             });
         }
     }
+    $("#family1_form").validate({
+                rules: {
+                    "user[first_name]": {
+                        required: true,
+                        maxlength: 255
+                    },
+                    "user[last_name]": {
+                        required: true,
+                        maxlength: 255
+
+                    },
+                    "user[email]": {
+                        required: true,
+                        maxlength: 255,
+                        email: true, remote: {
+                            url: "/parent/parents/check_email?email=" + "user[email]",
+                            type: "get"
+                            //                                //                            dataType:'html'
+                        }
+                    },
+                    "user[phone]": {
+                        required: true,
+                        maxlength: 255,
+                        minlength: 6,
+                        number: true
+                    }
+                },
+                messages: {
+                    "user[email]": {
+                        remote: "Email already exists."
+                    }
+                    //
+                }
+
+            }
+    );
+
+
 </script>

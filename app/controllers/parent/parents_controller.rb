@@ -19,7 +19,25 @@ class Parent::ParentsController < ApplicationController
   def update_profile
     @user = current_user
     @user.update(parent_update_params)
-    render :text => "success"
+    if params[:profile] == "true"
+      render :text => "success"
+    else
+      render :partial => 'profile_image'
+    end
+  end
+
+  def update_password
+    @user = current_user
+    if @user.valid_password?(params[:Old_Password])
+      if @user.update_attributes(:password => params[:user][:password])
+        sign_in @user, :bypass => true
+        render :text => "success"
+      else
+        render :text => "error"
+      end
+    else
+      render :text => "not"
+    end
   end
 
   def create
