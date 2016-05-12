@@ -41,17 +41,22 @@ class Parent::ParentsController < ApplicationController
   end
 
   def create
-    not_existing_user = User.where(:email => params[:user][:email]).empty?
-    if not_existing_user
-      random_password = SecureRandom.hex(4)
-      child = User.new(:first_name => params[:user][:first_name], :last_name => params[:user][:last_name], :email => params[:user][:email], :phone => params[:user][:phone], :password => random_password, :parent_id => current_user.id)
-      if child.save!
-        render :text => "success"
+    unless params[:user][:email].blank? && params[:user][:phone].blank?
+      not_existing_user = User.where(:email => params[:user][:email]).empty?
+      if not_existing_user
+        random_password = SecureRandom.hex(4)
+        child = User.new(:first_name => params[:user][:first_name], :last_name => params[:user][:last_name], :email => params[:user][:email], :phone => params[:user][:phone], :password => random_password, :parent_id => current_user.id)
+        if child.save!
+          @children = current_user.children.where(:is_deleted => false, :is_active => true)
+          render :partial => "family_list"
+        else
+          render :text => "error"
+        end
       else
-        render :text => "error"
+        render :text => "error2"
       end
     else
-      render :text => "error2"
+      render :text => "error3"
     end
   end
 
