@@ -48,7 +48,8 @@ class User < ActiveRecord::Base
                            provider: auth.provider,
                            uid: auth.uid,
                            email: email ? email : "#{TEMP_EMAIL_PREFIX}-#{auth.uid}-#{auth.provider}.com",
-                           password: Devise.friendly_token[0, 20]
+                           password: Devise.friendly_token[0, 20],
+                           avatar: process_uri(auth.info.image)
         )
       end
 
@@ -65,11 +66,13 @@ class User < ActiveRecord::Base
       if registered_user
         return registered_user
       else
+        photo = URI.parse(data["image"]) if data.image?
         user = User.create(first_name: data["name"],
                            provider: access_token.provider,
                            email: data["email"],
                            uid: access_token.uid,
-                           password: Devise.friendly_token[0, 20]
+                           password: Devise.friendly_token[0, 20],
+                           avatar: photo
         )
       end
     end
@@ -85,11 +88,13 @@ class User < ActiveRecord::Base
       if registered_user
         return registered_user
       else
+        photo = URI.parse(auth.info["image"]) if auth.info.image?
         user = User.create(first_name: auth.info.name,
                            provider: auth.provider,
                            uid: auth.uid,
                            email: auth.uid+"@twitter.com",
-                           password: Devise.friendly_token[0, 20]
+                           password: Devise.friendly_token[0, 20],
+                           avatar: photo
         )
       end
     end
@@ -97,6 +102,12 @@ class User < ActiveRecord::Base
 
   def email_verified?
     self.email && self.email !~ TEMP_EMAIL_REGEX
+  end
+
+  def self.process_uri(uri)
+    avatar_url = URI.parse(uri)
+    avatar_url.scheme = 'https'
+    avatar_url.to_s
   end
 
 end

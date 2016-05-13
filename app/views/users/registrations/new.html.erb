@@ -9,7 +9,7 @@
   <h3 class="font-green">Sign Up as a "Parent"</h3>
 
   <p class="hint"> Enter your personal details below: </p>
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), :class => "register-form") do |f| %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), :class => "register-form", :html => {:id => "parents_registration"}) do |f| %>
       <%= devise_error_messages! %>
 
       <div class="form-group">
@@ -64,3 +64,42 @@
 
   <%= render "users/shared/links" %>
 </div>
+
+<script>
+    $("#parents_registration").validate({
+        rules: {
+            "user[first_name]": {
+                required: true,
+                maxlength: 255
+            },
+            "user[last_name]": {
+                required: true,
+                maxlength: 255
+            },
+            "user[email]": {
+                required: true,
+                email: true,
+                maxlength: 255
+            },
+            "user[phone]": {
+                required: true,
+                maxlength: 255
+            },
+            "user[about_me]": {
+                required: true,
+                maxlength: 255
+            },
+            "user[password]": {
+                required: true,
+                maxlength: 255,
+                minlength: 8
+            },
+            "user[password_confirmation]": {
+                required: true,
+                maxlength: 255,
+                minlength: 8,
+                equalTo: "#password_form2"
+            }
+        }
+    });
+</script>

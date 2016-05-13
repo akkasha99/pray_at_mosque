@@ -6,13 +6,16 @@ class AddColumnsToUsers < ActiveRecord::Migration
     add_column :users, :last_name, :string
     add_column :users, :search_radius, :float
     add_column :users, :parent_id, :integer
-    add_column :users, :device_token, :integer
+    add_column :users, :device_token, :string
     add_column :users, :is_deleted, :boolean, :default => false
     add_column :users, :is_active, :boolean, :default => true
     add_column :users, :about_me, :string
     add_column :users, :latitude, :float
     add_column :users, :longitude, :float
     add_column :users, :phone, :string
+    add_column :users, :customer_id, :string
+    add_column :users, :merchant_id, :string
+    add_column :users, :parent_balance, :boolean, :default => 0.0
     add_attachment :users, :avatar
   end
 
@@ -23,13 +26,16 @@ class AddColumnsToUsers < ActiveRecord::Migration
     remove_column :users, :last_name, :string
     remove_column :users, :search_radius, :float
     remove_column :users, :parent_id, :integer
-    remove_column :users, :device_token, :integer
+    remove_column :users, :device_token, :string
     remove_column :users, :is_deleted, :boolean, :default => false
     remove_column :users, :is_active, :boolean, :default => true
     remove_column :users, :about_me, :string
     remove_column :users, :latitude, :float
     remove_column :users, :longitude, :float
     remove_column :users, :phone, :string
+    remove_column :users, :customer_id, :string
+    remove_column :users, :merchant_id, :string
+    remove_column :users, :parent_balance, :boolean
     remove _attachment :users, :avatar
   end
 end

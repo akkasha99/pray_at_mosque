@@ -2,6 +2,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 # before_filter :configure_sign_up_params, only: [:create]
 # before_filter :configure_account_update_params, only: [:update]
   layout "application"
+  include ApplicationHelper
 
 # GET /resource/sign_up
   def new
@@ -17,6 +18,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
         resource.role_id = Role.where(:name => 'parent').first.id
         if resource.save!
           FamilyCode.create(:code => SecureRandom.hex(4), :user_id => resource.id)
+          result = create_customer_on_braintree(resource)
+          if result
+          else
+            @user_errors
+          end
         end
       else
         resource.role_id = Role.where(:name => 'mosque').first.id
