@@ -42,8 +42,8 @@ class User < ActiveRecord::Base
       if registered_user
         return registered_user
       else
-        email_is_verified = auth.info.email && (auth.info.verified || auth.info.verified_email)
-        email = auth.info.email if email_is_verified
+        # email_is_verified = auth.info.email && (auth.info.verified || auth.info.verified_email)
+        email = auth.info.email # if email_is_verified
         user = User.create(first_name: auth.extra.raw_info.name,
                            provider: auth.provider,
                            uid: auth.uid,

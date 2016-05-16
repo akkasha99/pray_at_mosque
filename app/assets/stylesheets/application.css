@@ -27,6 +27,7 @@
  *= require custom
  *= require apprise
  *= require apprise-v2
+ *= require jquery.datetimepicker.css
  *= require_self
  */
 .hudmsg {

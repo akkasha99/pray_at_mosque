@@ -1,6 +1,7 @@
 class Parent::ParentsController < ApplicationController
   before_action :route, :except => [:check_email]
   layout 'application'
+  include ApplicationHelper
 
   def index
     @verse_of_day = DisplayingContent.where("content_type=?", 'verse').order('created_at').first
@@ -60,6 +61,26 @@ class Parent::ParentsController < ApplicationController
     end
   end
 
+  def payment_info
+    # user = current_user
+    # params[:payment_information][:expiry_date] = DateTime.parse(params[:payment_information][:expiry_date]).strftime('%m/%Y')
+    # payment = PaymentInformation.new(payment_method_params)
+    # if payment.valid?
+    #   result = create_payment_information(user, payment_method_params)
+    #   if result.success?
+    #     PaymentInformation.create(:user_id => user.id, :customer_id => result.credit_card.customer_id, :payment_method_token => result.credit_card.token, :card_type => result.credit_card.card_type)
+    #     render :text => "success"
+    #   else
+    #
+    #   end
+    # else
+    #   payment.errors.full_messages.each do |msg|
+    #     @error_string += msg
+    #   end
+    #   render :text => "false"
+    # end
+  end
+
   def check_email
     unless params[:user][:email].blank?
       @user = User.where(:email => params[:user][:email]).first
@@ -83,6 +104,10 @@ class Parent::ParentsController < ApplicationController
 
   def parent_update_params
     params.require(:user).permit(:first_name, :last_name, :phone, :about_me, :avatar)
+  end
+
+  def payment_method_params
+    params.require(:payment_information).permit(:first_name, :last_name, :cvv, :card_number, :expiry_date, :user_id, :address, :city, :state, :country)
   end
 
 end

@@ -42,6 +42,7 @@
 //= require additional-methods.min
 //= require apprise-v2
 //= require apprise-1.5.full
+//= require components-pickers.js
 //= require_self
 //= require_tree .
 

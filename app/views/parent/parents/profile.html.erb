@@ -85,21 +85,109 @@
                             <% end %>
                           </div>
                           <div id="tab_1_4" class="tab-pane">
-                            <form action="#">
-                              <div class="form-group">
-                                <label class="control-label">Current Password</label>
-                                <input type="password" class="form-control"></div>
-                              <div class="form-group">
-                                <label class="control-label">New Password</label>
-                                <input type="password" class="form-control"></div>
-                              <div class="form-group">
-                                <label class="control-label">Re-type New Password</label>
-                                <input type="password" class="form-control"></div>
-                              <div class="margin-top-10">
-                                <a class="btn green" href="javascript:;"> Change Password </a>
-                                <!--<a class="btn default" href="javascript:;"> Cancel </a>-->
-                              </div>
-                            </form>
+                            <%#= PaymentInformation.new %>
+                            <%= form_for :payment_information, :url => '/parent/parents/payment_info', :html => {:id => 'payment_info_form', :multipart => true, :onsumbit => 'return false'} do |p| %>
+                                <!--<form action="#">-->
+                                <div class="form-body">
+                                  <div class="row">
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <label>First Name</label>
+
+                                        <div class="input-group">
+                                          <%= text_field_tag 'payment_information[first_name]', "", :autofocus => true, :class => "form-control", :placeholder => "First Name", :required => "required" %>
+                                          <%#= hidden_field_tag 'cardholder_name', payment.cardholder_name %>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <label>Last Name</label>
+
+                                        <div class="input-group">
+                                          <%= text_field_tag 'payment_information[last_name]', "", :autofocus => false, :class => "form-control", :placeholder => "Last Name", :required => "required" %>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <label>Credit Card</label>
+
+                                        <div class="input-group">
+                                          <%= text_field_tag 'payment_information[card_number]', '', :autofocus => false, :class => "form-control", :placeholder => "Credit Card Number", :required => "required" %>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <label>CVV</label>
+
+                                        <div class="input-group">
+                                          <%= text_field_tag 'payment_information[cvv]', '', :autofocus => false, :class => "form-control", :placeholder => "CVV", :required => "required" %>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <label>Expiry Date</label>
+
+                                        <div class="input-group">
+                                          <%= text_field_tag 'payment_information[expiry_date]', '', :autofocus => false, :class => "form-control date-picker", :placeholder => "Expiry Date", :required => "required" %>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <label>Address</label>
+
+                                        <div class="input-group">
+                                          <%= text_field_tag 'payment_information[address]', '', :autofocus => true, :class => "form-control", :placeholder => "Address" %>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <label>City</label>
+
+                                        <div class="input-group">
+                                          <%= text_field_tag 'payment_information[city]', '', :autofocus => true, :class => "form-control", :placeholder => "City" %>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <label>State</label>
+
+                                        <div class="input-group">
+                                          <%= text_field_tag 'payment_information[state]', '', :class => "form-control", :placeholder => "State" %>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <label>Country</label>
+
+                                        <div class="input-group">
+                                          <%= text_field_tag 'payment_information[country]', '', :class => "form-control", :placeholder => "Country" %>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-actions">
+                                  <div class="z_100" id="save-btn">
+                                    <a class="btn blue" href="javascript:void(0)" onclick="submit_payment_method()">Save</a>
+                                  </div>
+                                </div>
+                            <% end %>
                           </div>
                         </div>
                       </div>
@@ -211,5 +299,23 @@
 
             }
     );
+
+    $('.date-picker').datepicker({
+        rtl: Metronic.isRTL(),
+        autoclose: true,
+        format: 'yyyy-mm-dd'
+    });
+
+    function submit_payment_method() {
+        if ($("#payment_info_form").valid() == true) {
+            $("#payment_info_form").ajaxSubmit({
+                success: function (data) {
+                    alert(data);
+                },
+                error: function (data) {
+                }
+            })
+        }
+    }
 
 </script>

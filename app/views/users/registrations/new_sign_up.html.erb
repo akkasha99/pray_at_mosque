@@ -10,7 +10,7 @@
 
   <p class="hint"> Enter your personal details below: </p>
   <% resource_name = :user %>
-  <%= form_for(User.new, as: resource_name, url: registration_path(resource_name), :class => "register-form") do |f| %>
+  <%= form_for(User.new, as: resource_name, url: registration_path(resource_name), :class => "register-form", :html => {:id => "mosque_registration"}) do |f| %>
       <%= devise_error_messages! %>
 
       <div class="form-group">
@@ -43,7 +43,7 @@
         <% if @minimum_password_length %>
             <em>(<%= @minimum_password_length %> characters minimum)</em>
         <% end %><br/>
-        <%= f.password_field :password, autocomplete: "off", :class => "form-control placeholder-no-fix", :placeholder => "Password" %>
+        <%= f.password_field :password, autocomplete: "off", :class => "form-control placeholder-no-fix", :placeholder => "Password", :id => "mosque_password" %>
       </div>
 
       <div class="form-group">
@@ -59,9 +59,56 @@
 
 
       <div class="form-action">
-        <%= f.submit "Sign up", :class => "btn btn-success uppercase pull-right" %>
+        <%#= f.submit "Sign up", :class => "btn btn-success uppercase pull-right" %>
+        <%= button_tag "Sign up", :type => "button", :class => "btn btn-success uppercase pull-right", :onclick => 'submit_sign_up()' %>
       </div>
   <% end %>
 
   <%= render "users/shared/links" %>
 </div>
+
+<script>
+
+    function submit_sign_up() {
+        if ($("#mosque_registration").valid() == true) {
+            $("#mosque_registration").submit();
+        }
+    }
+
+    $("#mosque_registration").validate({
+        rules: {
+            "user[first_name]": {
+                required: true,
+                maxlength: 255
+            },
+            "user[last_name]": {
+                required: true,
+                maxlength: 255
+            },
+            "user[email]": {
+                required: true,
+                email: true,
+                maxlength: 255
+            },
+            "user[phone]": {
+                required: true,
+                maxlength: 255
+            },
+            "user[about_me]": {
+//                required: true,
+                maxlength: 255
+            },
+            "user[password]": {
+                required: true,
+                maxlength: 255,
+                minlength: 8
+            },
+            "user[password_confirmation]": {
+                required: true,
+                maxlength: 255,
+                minlength: 8,
+                equalTo: "#mosque_password"
+            }
+        }
+    });
+</script>

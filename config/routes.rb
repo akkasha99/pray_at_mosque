@@ -80,6 +80,7 @@ Rails.application.routes.draw do
         get 'check_email'
         patch 'update_profile'
         post 'update_password'
+        post 'payment_info'
       end
     end
   end
