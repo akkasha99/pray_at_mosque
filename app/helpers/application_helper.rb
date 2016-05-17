@@ -24,7 +24,7 @@ module ApplicationHelper
         :cvv => card_info[:cvv],
         :number => card_info[:card_number],
         :expiration_date => card_info[:expiry_date],
-        :cardholder_name => "", #card_info[:card_holder],
+        :cardholder_name => card_info[:card_holder],
         :billing_address => {
             :first_name => card_info[:first_name],
             :last_name => card_info[:last_name],
@@ -34,34 +34,46 @@ module ApplicationHelper
             :street_address => card_info[:address]
         },
         :options => {
-            :verify_card => true,
-            :fail_on_duplicate_payment_method => true,
+            # :verify_card => true,
+            # :fail_on_duplicate_payment_method => true,
             :make_default => true
         }
     )
     return result
   end
 
-  def update_payment_information(token, cvv, credit_card_number, exp_date, first_name, last_name, city, state, country, address, c_name)
+  def update_payment_information(card_info, token)
     result = Braintree::CreditCard.update(
         token,
-        :cvv => cvv,
-        :number => credit_card_number,
-        :expiration_date => exp_date,
-        :cardholder_name => c_name.present? ? c_name : "",
+        :cvv => card_info[:cvv],
+        :number => card_info[:card_number],
+        :expiration_date => card_info[:expiry_date],
+        :cardholder_name => card_info[:card_holder],
         :billing_address => {
-            :first_name => first_name,
-            :last_name => last_name,
-            :locality => city,
-            :region => state,
-            :country_name => country,
-            :street_address => address,
+            :first_name => card_info[:first_name],
+            :last_name => card_info[:last_name],
+            :locality => card_info[:city],
+            :region => card_info[:state],
+            :country_name => card_info[:country],
+            :street_address => card_info[:address]
         },
         :options => {
 
             #:verify_card => true,
             #:fail_on_duplicate_payment_method => true,
             :make_default => true
+        }
+    )
+    return result
+  end
+
+  def parent_transaction(user, amount)
+    result = Braintree::Transaction.sale(
+        :customer_id => user.customer_id,
+        :amount => amount,
+        :payment_method_token => user.payment_information.payment_method_token,
+        :options => {
+            :submit_for_settlement => true
         }
     )
     return result

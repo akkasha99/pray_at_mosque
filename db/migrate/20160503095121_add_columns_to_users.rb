@@ -15,7 +15,7 @@ class AddColumnsToUsers < ActiveRecord::Migration
     add_column :users, :phone, :string
     add_column :users, :customer_id, :string
     add_column :users, :merchant_id, :string
-    add_column :users, :parent_balance, :boolean, :default => 0.0
+    add_column :users, :parent_balance, :float, :default => 0.0
     add_attachment :users, :avatar
   end
 
@@ -35,7 +35,7 @@ class AddColumnsToUsers < ActiveRecord::Migration
     remove_column :users, :phone, :string
     remove_column :users, :customer_id, :string
     remove_column :users, :merchant_id, :string
-    remove_column :users, :parent_balance, :boolean
+    remove_column :users, :parent_balance, :float
     remove _attachment :users, :avatar
   end
 end

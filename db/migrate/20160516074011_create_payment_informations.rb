@@ -16,6 +16,7 @@ class CreatePaymentInformations < ActiveRecord::Migration
       t.integer :cvv
       t.boolean :is_active
       t.string :card_type
+      t.string :customer_id
       t.boolean :status
 
       t.timestamps null: false

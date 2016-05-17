@@ -15,6 +15,12 @@ class Parent::ParentsController < ApplicationController
 
   def profile
     @user = current_user
+    user_payment_info = @user.payment_information
+    if user_payment_info.present?
+      @payment_info = Braintree::CreditCard.find(user_payment_info.payment_method_token)
+    else
+      @payment_info = nil
+    end
   end
 
   def update_profile
@@ -62,23 +68,52 @@ class Parent::ParentsController < ApplicationController
   end
 
   def payment_info
-    # user = current_user
-    # params[:payment_information][:expiry_date] = DateTime.parse(params[:payment_information][:expiry_date]).strftime('%m/%Y')
-    # payment = PaymentInformation.new(payment_method_params)
-    # if payment.valid?
-    #   result = create_payment_information(user, payment_method_params)
-    #   if result.success?
-    #     PaymentInformation.create(:user_id => user.id, :customer_id => result.credit_card.customer_id, :payment_method_token => result.credit_card.token, :card_type => result.credit_card.card_type)
-    #     render :text => "success"
-    #   else
-    #
-    #   end
-    # else
-    #   payment.errors.full_messages.each do |msg|
-    #     @error_string += msg
-    #   end
-    #   render :text => "false"
-    # end
+    user = current_user
+    params[:payment_information][:expiry_date] = DateTime.parse(params[:payment_information][:expiry_date]).strftime('%m/%Y')
+    payment = PaymentInformation.new(payment_method_params)
+    if payment.valid?
+      existing_payment_info = user.payment_information
+      if existing_payment_info.nil?
+        result = create_payment_information(user, payment_method_params)
+        if result.success?
+          ne_payment_information = PaymentInformation.new(:user_id => user.id, :customer_id => result.credit_card.customer_id, :payment_method_token => result.credit_card.token, :card_type => result.credit_card.card_type)
+          ne_payment_information.save(:validate => false)
+          render :json => {:success => "true", :message => "Saved Successfully"}
+        else
+          error_string = create_error_string(result.errors)
+          render :json => {:success => "false", :message => error_string}
+        end
+      else
+        result = update_payment_information(payment_method_params, existing_payment_info.payment_method_token)
+        if result.success?
+          render :json => {:success => "true", :message => "Saved Successfully"}
+        else
+          error_string = create_error_string(result.errors)
+          render :json => {:success => "false", :message => error_string}
+        end
+      end
+    else
+      error_string = create_error_string(payment.errors.full_messages)
+      render :json => {:success => "false", :message => error_string}
+    end
+  end
+
+  def create_transaction
+    user = current_user
+    if user.payment_information.nil?
+      render :json => {:success => "false", :message => "Please Enter Credit Card Information first."}
+    else
+      if params[:transaction][:transaction_amount].to_f > 0
+        result = parent_transaction(user, params[:transaction][:transaction_amount])
+        if result.success?
+          user.update_attributes(:parent_balance => (user.parent_balance + params[:transaction][:transaction_amount].to_f))
+          # TransactionHistory.create(:user_id => user.id,:payment_information_id => )
+        end
+        render :json => {:success => "true", :message => "Params Received."}
+      else
+        render :json => {:success => "false", :message => "Amount must be greater than 0."}
+      end
+    end
   end
 
   def check_email
@@ -100,6 +135,14 @@ class Parent::ParentsController < ApplicationController
     end
   end
 
+  def create_error_string(error_object)
+    error_string = ""
+    error_object.each do |error|
+      error_string += error.message
+    end
+    return error_string
+  end
+
   private
 
   def parent_update_params
@@ -107,7 +150,7 @@ class Parent::ParentsController < ApplicationController
   end
 
   def payment_method_params
-    params.require(:payment_information).permit(:first_name, :last_name, :cvv, :card_number, :expiry_date, :user_id, :address, :city, :state, :country)
+    params.require(:payment_information).permit(:first_name, :last_name, :cvv, :card_holder, :card_number, :expiry_date, :user_id, :address, :city, :state, :country)
   end
 
 end

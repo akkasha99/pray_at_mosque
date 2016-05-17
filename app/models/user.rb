@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   belongs_to :parent, :class_name => "User"
 
   has_one :family_code, :dependent => :destroy
+  has_one :payment_information, :dependent => :destroy
   TEMP_EMAIL_PREFIX = 'change@me'
   TEMP_EMAIL_REGEX = /\Achange@me/
 

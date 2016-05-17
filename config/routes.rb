@@ -81,6 +81,7 @@ Rails.application.routes.draw do
         patch 'update_profile'
         post 'update_password'
         post 'payment_info'
+        post 'create_transaction'
       end
     end
   end

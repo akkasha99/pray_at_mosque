@@ -27,6 +27,9 @@
                           <li class="">
                             <a data-toggle="tab" href="#tab_1_4" aria-expanded="false">Payment Information</a>
                           </li>
+                          <li class="">
+                            <a data-toggle="tab" href="#tab_1_5" aria-expanded="false">Transaction</a>
+                          </li>
                         </ul>
                       </div>
                       <div class="portlet-body">
@@ -95,8 +98,8 @@
                                         <label>First Name</label>
 
                                         <div class="input-group">
-                                          <%= text_field_tag 'payment_information[first_name]', "", :autofocus => true, :class => "form-control", :placeholder => "First Name", :required => "required" %>
-                                          <%#= hidden_field_tag 'cardholder_name', payment.cardholder_name %>
+                                          <%= text_field_tag 'payment_information[first_name]', "#{@payment_info.nil? ? '' : @payment_info.billing_address.first_name}", :autofocus => true, :class => "form-control", :placeholder => "First Name", :required => "required" %>
+                                          <%= hidden_field_tag 'payment_information[card_holder]', "#{@payment_info.nil? ? '' : @payment_info.cardholder_name }" %>
                                         </div>
                                       </div>
                                     </div>
@@ -105,7 +108,7 @@
                                         <label>Last Name</label>
 
                                         <div class="input-group">
-                                          <%= text_field_tag 'payment_information[last_name]', "", :autofocus => false, :class => "form-control", :placeholder => "Last Name", :required => "required" %>
+                                          <%= text_field_tag 'payment_information[last_name]', "#{@payment_info.nil? ? '' : @payment_info.billing_address.last_name}", :autofocus => false, :class => "form-control", :placeholder => "Last Name", :required => "required" %>
                                         </div>
                                       </div>
                                     </div>
@@ -116,7 +119,7 @@
                                         <label>Credit Card</label>
 
                                         <div class="input-group">
-                                          <%= text_field_tag 'payment_information[card_number]', '', :autofocus => false, :class => "form-control", :placeholder => "Credit Card Number", :required => "required" %>
+                                          <%= text_field_tag 'payment_information[card_number]', "#{@payment_info.nil? ? '' : @payment_info.masked_number}", :autofocus => false, :class => "form-control", :placeholder => "Credit Card Number", :required => "required" %>
                                         </div>
                                       </div>
                                     </div>
@@ -136,7 +139,7 @@
                                         <label>Expiry Date</label>
 
                                         <div class="input-group">
-                                          <%= text_field_tag 'payment_information[expiry_date]', '', :autofocus => false, :class => "form-control date-picker", :placeholder => "Expiry Date", :required => "required" %>
+                                          <%= text_field_tag 'payment_information[expiry_date]', "#{@payment_info.nil? ? '' : @payment_info.expiration_date}", :autofocus => false, :class => "form-control date-picker", :placeholder => "Expiry Date", :required => "required" %>
                                         </div>
                                       </div>
                                     </div>
@@ -147,7 +150,7 @@
                                         <label>Address</label>
 
                                         <div class="input-group">
-                                          <%= text_field_tag 'payment_information[address]', '', :autofocus => true, :class => "form-control", :placeholder => "Address" %>
+                                          <%= text_field_tag 'payment_information[address]', "#{@payment_info.nil? ? '' : @payment_info.billing_address.street_address}", :autofocus => true, :class => "form-control", :placeholder => "Address" %>
                                         </div>
                                       </div>
                                     </div>
@@ -156,7 +159,7 @@
                                         <label>City</label>
 
                                         <div class="input-group">
-                                          <%= text_field_tag 'payment_information[city]', '', :autofocus => true, :class => "form-control", :placeholder => "City" %>
+                                          <%= text_field_tag 'payment_information[city]', "#{@payment_info.nil? ? '' : @payment_info.billing_address.locality}", :autofocus => true, :class => "form-control", :placeholder => "City" %>
                                         </div>
                                       </div>
                                     </div>
@@ -167,7 +170,7 @@
                                         <label>State</label>
 
                                         <div class="input-group">
-                                          <%= text_field_tag 'payment_information[state]', '', :class => "form-control", :placeholder => "State" %>
+                                          <%= text_field_tag 'payment_information[state]', "#{@payment_info.nil? ? '' : @payment_info.billing_address.region}", :class => "form-control", :placeholder => "State" %>
                                         </div>
                                       </div>
                                     </div>
@@ -176,7 +179,7 @@
                                         <label>Country</label>
 
                                         <div class="input-group">
-                                          <%= text_field_tag 'payment_information[country]', '', :class => "form-control", :placeholder => "Country" %>
+                                          <%= text_field_tag 'payment_information[country]', "#{@payment_info.nil? ? '' : @payment_info.billing_address.country_name}", :class => "form-control", :placeholder => "Country" %>
                                         </div>
                                       </div>
                                     </div>
@@ -186,6 +189,30 @@
                                   <div class="z_100" id="save-btn">
                                     <a class="btn blue" href="javascript:void(0)" onclick="submit_payment_method()">Save</a>
                                   </div>
+                                </div>
+                            <% end %>
+                          </div>
+                          <div id="tab_1_5" class="tab-pane">
+                            <%= form_for :transaction, :url => "/parent/parents/create_transaction", :html => {:id => 'transaction_form', :multipart => true, :onsubmit => 'return false;', :method => "post"} do |f| %>
+                                <div class="form-group">
+                                  <div class="row">
+                                    <div class="col-md-4">
+                                      <label class="control-label">Current Balance</label>
+                                      <label class="form-control"><%= @user.parent_balance %></label>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <div class="row">
+                                    <div class="col-md-4">
+                                      <label class="control-label">Submit Payment</label>
+                                      <%= f.text_field :transaction_amount, :placeholder => "Enter Amount", :class => "form-control", :required => "required" %>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="margin-top-10">
+                                  <a class="btn green" href="javascript:;" onclick="perform_transaction()"> Submit</a>
+                                  <!--<a class="btn default" href="javascript:;"> Cancel </a>-->
                                 </div>
                             <% end %>
                           </div>
@@ -204,72 +231,6 @@
 </div>
 
 <script>
-    function update_my_profile() {
-        if ($("#profile_form").valid() == true) {
-            $(".background_shadow").show();
-            $("#profile_form").ajaxSubmit({
-                success: function (data) {
-                    if (data == "success") {
-                        $(".background_shadow").hide();
-                        hudMsg('success', 'Profile Updated successfully.')
-                    }
-                    else if (data == "error") {
-                        $(".background_shadow").hide();
-                        hudMsg('error', 'Something went wrong. Try again later.')
-                    }
-                },
-                error: function (data) {
-                }
-            })
-        }
-    }
-
-    function update_password() {
-        if ($("#password_form").valid() == true) {
-            $(".background_shadow").show();
-            $("#password_form").ajaxSubmit({
-                success: function (data) {
-                    if (data == "success") {
-                        $(".background_shadow").hide();
-                        hudMsg('success', 'Password updated successfully.')
-                        $('#password_form').trigger("reset");
-                    }
-                    else if (data == "not") {
-                        $(".background_shadow").hide();
-                        hudMsg('error', 'Old password is wrong.')
-                    }
-                    else if (data == "error") {
-                        $(".background_shadow").hide();
-                        hudMsg('error', 'Something went wrong. Try again later.')
-                    }
-                }
-            })
-        }
-    }
-
-    $("#password_form").validate({
-                rules: {
-                    "user[password]": {
-                        required: true,
-                        maxlength: 255,
-                        minlength: 8
-                    },
-                    "user[password_confirmation]": {
-                        required: true,
-                        maxlength: 255,
-                        minlength: 8,
-                        equalTo: '#new_password'
-                    },
-                    "Old_Password": {
-                        required: true,
-                        maxlength: 255,
-                        minlength: 8
-                    }
-                }
-
-            }
-    );
-
     $("#profile_form").validate({
                 rules: {
                     "user[first_name]": {
@@ -299,6 +260,71 @@
 
             }
     );
+    function update_my_profile() {
+        if ($("#profile_form").valid() == true) {
+            $(".background_shadow").show();
+            $("#profile_form").ajaxSubmit({
+                success: function (data) {
+                    if (data == "success") {
+                        $(".background_shadow").hide();
+                        hudMsg('success', 'Profile Updated successfully.')
+                    }
+                    else if (data == "error") {
+                        $(".background_shadow").hide();
+                        hudMsg('error', 'Something went wrong. Try again later.')
+                    }
+                },
+                error: function (data) {
+                }
+            })
+        }
+    }
+
+    $("#password_form").validate({
+                rules: {
+                    "user[password]": {
+                        required: true,
+                        maxlength: 255,
+                        minlength: 8
+                    },
+                    "user[password_confirmation]": {
+                        required: true,
+                        maxlength: 255,
+                        minlength: 8,
+                        equalTo: '#new_password'
+                    },
+                    "Old_Password": {
+                        required: true,
+                        maxlength: 255,
+                        minlength: 8
+                    }
+                }
+
+            }
+    );
+
+    function update_password() {
+        if ($("#password_form").valid() == true) {
+            $(".background_shadow").show();
+            $("#password_form").ajaxSubmit({
+                success: function (data) {
+                    if (data == "success") {
+                        $(".background_shadow").hide();
+                        hudMsg('success', 'Password updated successfully.')
+                        $('#password_form').trigger("reset");
+                    }
+                    else if (data == "not") {
+                        $(".background_shadow").hide();
+                        hudMsg('error', 'Old password is wrong.')
+                    }
+                    else if (data == "error") {
+                        $(".background_shadow").hide();
+                        hudMsg('error', 'Something went wrong. Try again later.')
+                    }
+                }
+            })
+        }
+    }
 
     $('.date-picker').datepicker({
         rtl: Metronic.isRTL(),
@@ -306,13 +332,103 @@
         format: 'yyyy-mm-dd'
     });
 
+    $("#payment_info_form").validate({
+                rules: {
+                    "payment_information[first_name]": {
+                        maxlength: 255
+                    },
+                    "payment_information[last_name]": {
+                        maxlength: 255
+
+                    },
+                    "payment_information[card_number]": {
+                        required: true,
+                        maxlength: 16,
+                        minlength: 12
+                    },
+                    "payment_information[cvv]": {
+                        required: true,
+                        maxlength: 4,
+                        minlength: 3,
+                        number: true
+                    },
+                    "payment_information[expiry_date]": {
+                        required: true
+                    },
+                    "payment_information[address]": {
+                        maxlength: 255
+                    },
+                    "payment_information[city]": {
+                        maxlength: 255
+                    },
+                    "payment_information[state]": {
+                        maxlength: 255
+                    },
+                    "payment_information[country]": {
+                        maxlength: 255
+                    }
+                }
+
+            }
+    );
+
+
     function submit_payment_method() {
         if ($("#payment_info_form").valid() == true) {
+            $(".background_shadow").show();
             $("#payment_info_form").ajaxSubmit({
                 success: function (data) {
-                    alert(data);
-                },
+                    if (data.success == "false") {
+                        $(".background_shadow").hide();
+                        hudMsg('error', data.message)
+                    }
+                    else {
+                        $(".background_shadow").hide();
+                        hudMsg('success', data.message)
+                    }
+                }
+                ,
                 error: function (data) {
+                    $(".background_shadow").hide();
+                    hudMsg('error', "Something went wrong, Please tray again later.")
+                }
+            })
+        }
+    }
+
+    $("#transaction_form").validate({
+                rules: {
+                    "transaction[transaction_amount]": {
+                        required: true,
+                        number: true,
+                        min: 1
+                    }
+                }
+
+            }
+    );
+
+    function perform_transaction() {
+        if ($("#transaction_form").valid() == true) {
+            apprise("Are you Sure You want to do this transaction?", {'confirm': true}, function (r) {
+                if (r) {
+                    $(".background_shadow").show();
+                    $("#transaction_form").ajaxSubmit({
+                        success: function (data) {
+                            if (data.success == "false") {
+                                $(".background_shadow").hide();
+                                hudMsg('error', data.message)
+                            }
+                            else {
+                                $(".background_shadow").hide();
+                                hudMsg('success', data.message)
+                            }
+                        },
+                        error: function (data) {
+                            $(".background_shadow").hide();
+                            hudMsg('error', "Something went wrong, Please tray again later.")
+                        }
+                    })
                 }
             })
         }
