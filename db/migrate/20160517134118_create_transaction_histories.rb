@@ -8,7 +8,7 @@ class CreateTransactionHistories < ActiveRecord::Migration
       t.string :transaction_type
       t.float :transaction_amount
       t.float :braintree_fee
-      t.float :petaway_fee
+      t.float :pray_at_mosque_fee
       t.timestamps null: false
     end
   end

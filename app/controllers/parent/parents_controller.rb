@@ -100,16 +100,20 @@ class Parent::ParentsController < ApplicationController
 
   def create_transaction
     user = current_user
-    if user.payment_information.nil?
+    user_payment_information = user.payment_information
+    if user_payment_information.nil?
       render :json => {:success => "false", :message => "Please Enter Credit Card Information first."}
     else
       if params[:transaction][:transaction_amount].to_f > 0
-        result = parent_transaction(user, params[:transaction][:transaction_amount])
+        result = parent_transaction(user, params[:transaction][:transaction_amount], user_payment_information)
         if result.success?
           user.update_attributes(:parent_balance => (user.parent_balance + params[:transaction][:transaction_amount].to_f))
-          # TransactionHistory.create(:user_id => user.id,:payment_information_id => )
+          TransactionHistory.create(:user_id => user.id, :payment_information_id => user_payment_information.id, :transaction_id => result.transaction.id, :transaction_type => result.transaction.type, :status => result.transaction.status, :transaction_amount => result.transaction.amount)
+          render :partial => 'profile_transaction', :locals => {:@user => user}
+        else
+          error_string = create_error_string(result.errors)
+          render :json => {:success => "false", :message => error_string}
         end
-        render :json => {:success => "true", :message => "Params Received."}
       else
         render :json => {:success => "false", :message => "Amount must be greater than 0."}
       end

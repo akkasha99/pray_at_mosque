@@ -1,0 +1,22 @@
+<%= form_for :transaction, :url => "/parent/parents/create_transaction", :html => {:id => 'transaction_form', :multipart => true, :onsubmit => 'return false;', :method => "post"} do |f| %>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-4">
+          <label class="control-label">Current Balance</label>
+          <label class="form-control"><%= @user.parent_balance %></label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-4">
+          <label class="control-label">Submit Payment</label>
+          <%= f.text_field :transaction_amount, :placeholder => "Enter Amount", :class => "form-control", :required => "required" %>
+        </div>
+      </div>
+    </div>
+    <div class="margin-top-10">
+      <a class="btn green" href="javascript:;" onclick="perform_transaction()"> Submit</a>
+      <!--<a class="btn default" href="javascript:;"> Cancel </a>-->
+    </div>
+<% end %>

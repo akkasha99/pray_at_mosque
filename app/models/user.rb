@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
     self.role.name == "mosque"
   end
 
-  def self.find_for_facebook_oauth(auth, signed_in_resource=nil)
+  def self.find_for_facebook_oauth(auth, role, signed_in_resource=nil)
     user = User.where(:provider => auth.provider, :uid => auth.uid).first
     if user
       return user
@@ -45,19 +45,23 @@ class User < ActiveRecord::Base
       else
         # email_is_verified = auth.info.email && (auth.info.verified || auth.info.verified_email)
         email = auth.info.email # if email_is_verified
+        user_role = Role.where(:name => role).first
         user = User.create(first_name: auth.extra.raw_info.name,
                            provider: auth.provider,
                            uid: auth.uid,
                            email: email ? email : "#{TEMP_EMAIL_PREFIX}-#{auth.uid}-#{auth.provider}.com",
                            password: Devise.friendly_token[0, 20],
-                           avatar: process_uri(auth.info.image)
+                           avatar: process_uri(auth.info.image),
+                           :role_id => user_role.id
         )
+        create_customer_on_braintree(user)
+        return user
       end
 
     end
   end
 
-  def self.find_for_google_oauth2(access_token, signed_in_resource=nil)
+  def self.find_for_google_oauth2(access_token, role, signed_in_resource=nil)
     data = access_token.info
     user = User.where(:provider => access_token.provider, :uid => access_token.uid).first
     if user
@@ -68,18 +72,22 @@ class User < ActiveRecord::Base
         return registered_user
       else
         photo = URI.parse(data["image"]) if data.image?
+        user_role = Role.where(:name => role).first
         user = User.create(first_name: data["name"],
                            provider: access_token.provider,
                            email: data["email"],
                            uid: access_token.uid,
                            password: Devise.friendly_token[0, 20],
-                           avatar: photo
+                           avatar: photo,
+                           :role_id => user_role.id
         )
+        create_customer_on_braintree(user)
+        return user
       end
     end
   end
 
-  def self.find_for_twitter_oauth(auth, signed_in_resource=nil)
+  def self.find_for_twitter_oauth(auth, role, signed_in_resource=nil)
 
     user = User.where(:provider => auth.provider, :uid => auth.uid).first
     if user
@@ -90,13 +98,17 @@ class User < ActiveRecord::Base
         return registered_user
       else
         photo = URI.parse(auth.info["image"]) if auth.info.image?
+        user_role = Role.where(:name => role).first
         user = User.create(first_name: auth.info.name,
                            provider: auth.provider,
                            uid: auth.uid,
                            email: auth.uid+"@twitter.com",
                            password: Devise.friendly_token[0, 20],
-                           avatar: photo
+                           avatar: photo,
+                           :role_id => user_role.id
         )
+        create_customer_on_braintree(user)
+        return user
       end
     end
   end
@@ -109,6 +121,25 @@ class User < ActiveRecord::Base
     avatar_url = URI.parse(uri)
     avatar_url.scheme = 'https'
     avatar_url.to_s
+  end
+
+  def self.create_customer_on_braintree(user)
+    result = Braintree::Customer.create(
+        :first_name => user.first_name,
+        :last_name => user.last_name,
+        :email => user.email
+    )
+    # puts "----------Brain tree result----------", result.inspect
+    if result.success?
+      puts "44444444444444444444444444444444444", result.inspect
+      user.update_attributes(:customer_id => result.customer.id)
+      return true
+    else
+      # puts "55555555555555555555555555555555555", result.inspect
+      puts "---------brain tree customer create error-----------", result.errors
+      @user_errors = result.errors
+      return false
+    end
   end
 
 end
