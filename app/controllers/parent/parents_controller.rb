@@ -54,6 +54,7 @@ class Parent::ParentsController < ApplicationController
         random_password = SecureRandom.hex(4)
         child = User.new(:first_name => params[:user][:first_name], :last_name => params[:user][:last_name], :email => params[:user][:email], :phone => params[:user][:phone], :password => random_password, :parent_id => current_user.id)
         if child.save!
+          PrayAtMosqueMailer.child_invitation(random_password, child).deliver_now
           @children = current_user.children.where(:is_deleted => false, :is_active => true)
           render :partial => "family_list"
         else
