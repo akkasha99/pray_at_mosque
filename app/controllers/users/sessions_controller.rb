@@ -10,18 +10,44 @@ class Users::SessionsController < Devise::SessionsController
 
 # POST /resource/sign_in
   def create
-    user = User.where(:email => params[:user][:email], :is_deleted => false).first
-    if user.present?
-      if user.is_active == false
-        flash[:error] = "User is not active to login."
-        redirect_to '/users/sign_out'
+    if request.format(request) == '*/*'
+      if (params[:user_id].present? && params[:user_id] != "")
+        resource = User.where(:id => params[:user_id], :is_deleted => false).first
       else
-        super
+        resource = User.where(:email => params[:user][:email], :is_deleted => false).first
+      end
+      if resource.present?
+        if resource.is_active == true
+          if resource.valid_password?(params[:Old_Password])
+            render :json => {:success => "true", :message => "User present."}
+          else
+            render :json => {:success => "false", :message => "Password is wrong."}
+          end
+        else
+          render :json => {:success => "false", :message => "User is not active."}
+        end
+      else
+        render :json => {:success => "false", :message => "User doesn't exist."}
       end
     else
-      flash[:error] = "The username or password you entered is incorrect."
-      redirect_to '/users/sign_in'
+      super
     end
+
+    # else
+    #   super
+    # end
+    # user = User.where(:email => params[:user][:email], :is_deleted => false).first
+    # if user.present?
+    #   if user.is_active == false
+    #     flash[:error] = "User is not active to login."
+    #     redirect_to '/users/sign_out'
+    #   else
+    #     super
+    #   end
+    # else
+    #   flash[:error] = "The username or password you entered is incorrect."
+    #   redirect_to '/users/sign_in'
+    # end
   end
 
 # DELETE /resource/sign_out

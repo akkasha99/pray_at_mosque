@@ -1,22 +1,36 @@
 module ApplicationHelper
-  # def create_customer_on_braintree(user)
-  #   result = Braintree::Customer.create(
-  #       :first_name => "parent1",
-  #       :last_name => "last name",
-  #       :email => "parent1@gmail.com"
-  #   )
-  #   # puts "----------Brain tree result----------", result.inspect
-  #   if result.success?
-  #     puts "44444444444444444444444444444444444", result.inspect
-  #     user.update_attributes(:customer_id => result.customer.id)
-  #     return true
-  #   else
-  #     # puts "55555555555555555555555555555555555", result.inspect
-  #     puts "---------brain tree customer create error-----------", result.errors
-  #     @user_errors = result.errors
-  #     return false
-  #   end
-  # end
+
+  def flash_class(level)
+    case level
+      when "notice" then
+        "alert alert-info"
+      when "success" then
+        "alert alert-success"
+      when "error" then
+        "alert alert-error"
+      when "alert" then
+        "alert alert-error"
+    end
+  end
+
+  def create_customer_on_braintree(user)
+    result = Braintree::Customer.create(
+        :first_name => "parent1",
+        :last_name => "last name",
+        :email => "parent1@gmail.com"
+    )
+    # puts "----------Brain tree result----------", result.inspect
+    if result.success?
+      puts "44444444444444444444444444444444444", result.inspect
+      user.update_attributes(:customer_id => result.customer.id)
+      return true
+    else
+      # puts "55555555555555555555555555555555555", result.inspect
+      puts "---------brain tree customer create error-----------", result.errors
+      @user_errors = result.errors
+      return false
+    end
+  end
 
   def create_payment_information(user, card_info)
     result = Braintree::CreditCard.create(
@@ -67,7 +81,7 @@ module ApplicationHelper
     return result
   end
 
-    def parent_transaction(user, amount, user_payment_information)
+  def parent_transaction(user, amount, user_payment_information)
     result = Braintree::Transaction.sale(
         :customer_id => user.customer_id,
         :amount => amount,

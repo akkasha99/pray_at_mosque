@@ -54,6 +54,7 @@ class User < ActiveRecord::Base
                            avatar: process_uri(auth.info.image),
                            :role_id => user_role.id
         )
+        FamilyCode.create(:code => SecureRandom.hex(4), :user_id => user.id) if role == "parent"
         create_customer_on_braintree(user)
         return user
       end
@@ -81,6 +82,7 @@ class User < ActiveRecord::Base
                            avatar: photo,
                            :role_id => user_role.id
         )
+        FamilyCode.create(:code => SecureRandom.hex(4), :user_id => user.id) if role == "parent"
         create_customer_on_braintree(user)
         return user
       end
@@ -107,6 +109,7 @@ class User < ActiveRecord::Base
                            avatar: photo,
                            :role_id => user_role.id
         )
+        FamilyCode.create(:code => SecureRandom.hex(4), :user_id => user.id) if role == "parent"
         create_customer_on_braintree(user)
         return user
       end
@@ -140,6 +143,14 @@ class User < ActiveRecord::Base
       @user_errors = result.errors
       return false
     end
+  end
+
+  def active_for_authentication?
+    super && self.is_active? # i.e. super && self.is_active
+  end
+
+  def inactive_message
+    "Sorry, this account has been deactivated."
   end
 
 end
